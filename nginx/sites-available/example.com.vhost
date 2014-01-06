@@ -56,18 +56,8 @@ server {
   #   auth_basic_user_file /var/www/domain.com/admin/.htpasswd;
   # }
 
-  # Do not log access to these to keep the logs cleaner
+  # Do not log access to the favicon, to keep the logs cleaner
   location = /favicon.ico {
-    log_not_found off;
-    access_log off;
-  }
-
-  location = /apple-touch-icon.png {
-    log_not_found off;
-    access_log off;
-  }
-
-  location = /apple-touch-icon-precomposed.png {
     log_not_found off;
     access_log off;
   }
