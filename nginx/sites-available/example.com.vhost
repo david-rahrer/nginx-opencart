@@ -160,6 +160,11 @@ server {
       deny all;
     }
   }
+  
+  # Deny direct access to files
+  location ~ \.(tpl|ini|log) {
+    deny all; 
+  }
 
   # Make sure these get through
   location = /robots.txt {
