@@ -65,7 +65,7 @@ server {
     rewrite ^/(.+)$ /index.php?_route_=$1 last;
   }
 
-  location /admin {
+  location /admin/ {
     index index.php;
   }
 
@@ -124,40 +124,41 @@ server {
   # Deny access to any files with a .php extension in these directories
   # Works in sub-directory installs and also in multisite network
   # Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
-
   location /srv/www/example.com/htdocs/store/system/cache/ {
-  location ~ .*\.(php\d*|cgi|pl|phtml)?$
-  {
-    deny all;
-  }
+    location ~ .*\.(php\d*|cgi|pl|phtml)?$ {
+      deny all;
+    }
   }
 
   location /srv/www/example.com/htdocs/store/system/logs/ {
-  location ~ .*\.(php\d*|cgi|pl|phtml)?$
-  {
-    deny all;
-  }
+    location ~ .*\.(php\d*|cgi|pl|phtml)?$ {
+      deny all;
+    }
   }
 
   location /srv/www/example.com/htdocs/store/image/ {
-  location ~ .*\.(php\d*|cgi|pl|phtml)?$
-  {
-    deny all;
-  }
+    location ~ .*\.(php\d*|cgi|pl|phtml)?$ {
+      deny all;
+    }
   }
 
   location /srv/www/example.com/htdocs/store/image/cache/ {
-  location ~ .*\.(php\d*|cgi|pl|phtml)?$
-  {
-    deny all;
-  }
+    location ~ .*\.(php\d*|cgi|pl|phtml)?$ {
+      deny all;
+    }
   }
 
   location /srv/www/example.com/htdocs/store/download/ {
-  location ~ .*\.(php\d*|cgi|pl|phtml)?$
-  {
-    deny all;
+    location ~ .*\.(php\d*|cgi|pl|phtml)?$ {
+      deny all;
+    }
   }
+  
+  #nginx configuration of vqmod htaccess
+  location /srv/www/example.com/htdocs/vqmod/ {
+    location ~ \.(xml|cache) {
+      deny all;
+    }
   }
 
   # Make sure these get through
