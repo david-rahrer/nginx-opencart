@@ -205,14 +205,11 @@ server {
     add_header Access-Control-Allow-Origin *;
   }
 
-  #error_page 404 /404.html;
-
   # redirect server error pages to the static page /50x.html
-  #
-  #error_page 500 502 503 504 /50x.html;
-  #location = /50x.html {
-  #   root /usr/share/nginx/www;
-  #}
+  error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+    root /usr/share/nginx/www;
+  }
 
   # Pass all .php files onto a php-fpm/php-fcgi server.
   location ~ [^/]\.php(/|$) {
