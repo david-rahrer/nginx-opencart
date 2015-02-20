@@ -196,10 +196,6 @@ server {
     # } 
   # }
 
-  rewrite ^/sitemap.xml$ /index.php?route=feed/google_sitemap last;
-  rewrite ^/googlebase.xml$ /index.php?route=feed/google_base last;
-  rewrite ^/download/(.*) /index.php?route=error/not_found last;
-
   # Fix for Firefox issue with cross site font icons
   location ~* \.(eot|otf|ttf|woff)$ {
     add_header Access-Control-Allow-Origin *;
