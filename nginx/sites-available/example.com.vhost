@@ -6,11 +6,36 @@ server {
 
 server {
   listen 80; # listen for ipv4; this line is default and implied
-  #listen [::]:80 default ipv6only=on; ## listen for ipv6
-  #listen [::]:443 ipv6only=off ssl;
+  listen 443 ssl;
   server_name example.com;
-  #ssl_certificate /srv/www/example.com/ssl/www.example.com.crt;
-  #ssl_certificate_key /srv/www/example.com/ssl/www.example.com.key;
+
+  # certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
+  ssl_certificate /srv/www/example.com/ssl/example.com.crt;
+  ssl_certificate_key /srv/www/example.com/ssl/example.com.key;
+  
+  # Allow multiple connections to use the same key data
+  ssl_session_timeout 5m;
+  ssl_session_cache shared:SSL:50m;
+  
+  # Diffie-Hellman parameter for DHE ciphersuites, recommended 2048 bits
+  ssl_dhparam /etc/ssl/certs/dhparam.pem;
+
+  # intermediate configuration. tweak to your needs.
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+  include snippets/ssl_ciphers_intermediate.conf;
+  ssl_prefer_server_ciphers on;
+
+  # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
+  #add_header Strict-Transport-Security max-age=15768000;
+
+  # OCSP Stapling ---
+  # fetch OCSP records from URL in ssl_certificate and cache them
+  ssl_stapling on;
+  ssl_stapling_verify on;
+
+  ## verify chain of trust of OCSP response using Root CA and Intermediate certs
+  #ssl_certificate /srv/www/example.com/ssl/example.com.crt;
+  resolver 8.8.8.8 8.8.4.4;
 
   root /srv/www/example.com/htdocs;
   index index.php index.html index.htm;
