@@ -9,7 +9,7 @@ server {
   listen 443 ssl;
   server_name example.com;
 
-  # certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
+  # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
   ssl_certificate /srv/www/example.com/ssl/example.com.crt;
   ssl_certificate_key /srv/www/example.com/ssl/example.com.key;
   
@@ -20,7 +20,7 @@ server {
   # Diffie-Hellman parameter for DHE ciphersuites, recommended 2048 bits
   ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
-  # intermediate configuration. tweak to your needs.
+  # Intermediate configuration. tweak to your needs
   ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
   include snippets/ssl_ciphers_intermediate.conf;
   ssl_prefer_server_ciphers on;
@@ -33,7 +33,7 @@ server {
   ssl_stapling on;
   ssl_stapling_verify on;
 
-  ## verify chain of trust of OCSP response using Root CA and Intermediate certs
+  # Verify chain of trust of OCSP response using Root CA and Intermediate certs
   #ssl_certificate /srv/www/example.com/ssl/example.com.crt;
   resolver 8.8.8.8 8.8.4.4;
 
@@ -48,7 +48,7 @@ server {
   error_page 403 =404;
 
   # It's always good to set logs, note however you cannot turn off the error log
-  # setting error_log off; will simply create a file called 'off'.
+  # Setting error_log off; will simply create a file called 'off'
   access_log /var/log/nginx/example.com.access.log;
   error_log /var/log/nginx/example.com.error.log;
 
@@ -59,8 +59,7 @@ server {
   rewrite /vqmod/install$ $scheme://$host$uri/ permanent;
 
   location / {
-    # This try_files directive is used to enable SEO-friendly URLs
-    # for OpenCart.
+    # This try_files directive is used to enable SEO-friendly URLs for OpenCart
     try_files $uri @opencart;
   }
 
@@ -68,6 +67,7 @@ server {
     rewrite ^/(.+)$ /index.php?_route_=$1 last;
   }
 
+  # Add trailing slash to */admin requests
   location /admin/ {
     index index.php;
   }
@@ -162,7 +162,7 @@ server {
     }
   }
   
-  #nginx configuration of vqmod htaccess
+  # Nginx configuration of vqmod htaccess
   location /srv/www/example.com/htdocs/vqmod/ {
     location ~ \.(xml|cache) {
       deny all;
@@ -181,7 +181,7 @@ server {
     access_log off;
   }
   
-  # nginx configuration of OC htaccess
+  # Nginx configuration of OC htaccess
   # SEO URL Settings
   location ~ .*\.(ico|gif|jpg|jpeg|png|js|css) {
   } 
@@ -217,7 +217,7 @@ server {
 
   # Pass all .php files onto a php-fpm/php-fcgi server.
   location ~ [^/]\.php(/|$) {
-    # regex to split $uri to $fastcgi_script_name and $fastcgi_path
+    # Regex to split $uri to $fastcgi_script_name and $fastcgi_path
     fastcgi_split_path_info ^(.+\.php)(/.+)$;
 
     # Check that the PHP script exists before passing it
