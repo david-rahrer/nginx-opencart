@@ -68,7 +68,7 @@ server {
     rewrite ^/(.+)$ /index.php?_route_=$1 last;
   }
 
-  # Add trailing slash to */admin requests
+  # Run index.php on /admin calls
   location /admin/ {
     index index.php;
   }
