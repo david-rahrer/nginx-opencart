@@ -36,7 +36,8 @@ server {
   # Verify chain of trust of OCSP response using Root CA and Intermediate certs
   ssl_trusted_certificate /srv/www/example.com/ssl/unified-ssl.crt;
   resolver 8.8.8.8 8.8.4.4;
-
+  resolver_timeout 10s;
+  
   root /srv/www/example.com/htdocs;
   index index.php index.html index.htm;
   charset UTF-8;
