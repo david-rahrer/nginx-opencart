@@ -54,6 +54,9 @@ server {
 
   # Add trailing slash to */admin requests.
   rewrite /admin$ $scheme://$host$uri/ permanent;
+  
+  # Add trailing slash to */vqmod/install requests.
+  rewrite /vqmod/install$ $scheme://$host$uri/ permanent;
 
   location / {
     # This try_files directive is used to enable SEO-friendly URLs
@@ -66,6 +69,11 @@ server {
   }
 
   location /admin/ {
+    index index.php;
+  }
+  
+  # Run index.php on /vqmod/install calls
+  location /vqmod/install/ {
     index index.php;
   }
 
