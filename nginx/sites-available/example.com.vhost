@@ -34,7 +34,7 @@ server {
   ssl_stapling_verify on;
 
   # Verify chain of trust of OCSP response using Root CA and Intermediate certs
-  #ssl_certificate /srv/www/example.com/ssl/example.com.crt;
+  ssl_trusted_certificate /srv/www/example.com/ssl/unified-ssl.crt;
   resolver 8.8.8.8 8.8.4.4;
 
   root /srv/www/example.com/htdocs;
