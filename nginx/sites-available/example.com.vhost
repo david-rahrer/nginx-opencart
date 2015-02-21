@@ -255,5 +255,6 @@ server {
   location /phpMyAdmin {
     rewrite ^/* /phpmyadmin last;
   }
+  # End PHPMyAdmin block
 
 } # End of server block.
