@@ -169,10 +169,6 @@ server {
     rewrite ^(.*)$ /index.php?route=feed/google_base break; 
   } 
   
-  location /download {
-    rewrite ^/download/(.*) /index.php?route=error/not_found break; 
-  } 
-  
   # location / { 
     # if (!-e $request_filename){
       # rewrite ^/([^?]*) /index.php?_route_=$1 break; 
