@@ -133,34 +133,8 @@ server {
   # Deny access to any files with a .php extension in these directories
   # Works in sub-directory installs and also in multisite network
   # Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
-  location /srv/www/example.com/htdocs/system/cache/ {
-    location ~ .*\.(php\d*|cgi|pl|phtml)?$ {
-      deny all;
-    }
-  }
-
-  location /srv/www/example.com/htdocs/system/logs/ {
-    location ~ .*\.(php\d*|cgi|pl|phtml)?$ {
-      deny all;
-    }
-  }
-
-  location /srv/www/example.com/htdocs/image/ {
-    location ~ .*\.(php\d*|cgi|pl|phtml)?$ {
-      deny all;
-    }
-  }
-
-  location /srv/www/example.com/htdocs/image/cache/ {
-    location ~ .*\.(php\d*|cgi|pl|phtml)?$ {
-      deny all;
-    }
-  }
-
-  location /srv/www/example.com/htdocs/download/ {
-    location ~ .*\.(php\d*|cgi|pl|phtml)?$ {
-      deny all;
-    }
+  location ~* /(?:cache|logs|image|download)/.*\.php$ {
+    deny all;
   }
   
   # Nginx configuration of vqmod htaccess
