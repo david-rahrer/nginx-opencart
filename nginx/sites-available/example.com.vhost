@@ -169,12 +169,6 @@ server {
     rewrite ^(.*)$ /index.php?route=feed/google_base break; 
   } 
   
-  # location / { 
-    # if (!-e $request_filename){
-      # rewrite ^/([^?]*) /index.php?_route_=$1 break; 
-    # } 
-  # }
-
   # Fix for Firefox issue with cross site font icons
   location ~* \.(eot|otf|ttf|woff)$ {
     add_header Access-Control-Allow-Origin *;
