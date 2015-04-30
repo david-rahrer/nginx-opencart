@@ -78,10 +78,6 @@ server {
     rewrite ^(.*)$ /index.php?route=feed/google_base break; 
   } 
 
-  location ~ .*\.(ico|gif|jpg|jpeg|png|js|css) {
-    # empty
-  } 
-
   location / {
     # This try_files directive is used to enable SEO-friendly URLs for OpenCart
     try_files $uri @opencart;
