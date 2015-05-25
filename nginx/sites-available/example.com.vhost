@@ -197,7 +197,7 @@ server {
     include fastcgi.conf;
   }
 
-  # Use this block if PHPMyAdmin is enabled for this domain
+  # Use this block if PHPMyAdmin is enabled for domain.com
   location /phpmyadmin {
     root /usr/share/;
     index index.php index.html index.htm;
