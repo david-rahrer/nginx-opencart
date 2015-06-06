@@ -52,13 +52,22 @@ server {
   access_log /var/log/nginx/domain.com.access.log;
   error_log /var/log/nginx/domain.com.error.log;
 
+  # Vqmod settings
   # Add trailing slash to */vqmod/install requests.
   rewrite /vqmod/install$ $scheme://$host$uri/ permanent;
-
+  
   # Run index.php on /vqmod/install calls
   location /vqmod/install/ {
     index index.php;
   }
+  
+  # Nginx configuration of vqmod htaccess
+  location /srv/www/oc-demo.tk/htdocs/vqmod/ {
+    location ~ \.(xml|cache) {
+      deny all;
+    }
+  }
+  # End Vqmod settings
   
   # SEO URL Settings
   # Nginx configuration of OC htaccess
@@ -137,13 +146,6 @@ server {
   # Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
   location ~* /(?:cache|logs|image|download)/.*\.php$ {
     deny all;
-  }
-  
-  # Nginx configuration of vqmod htaccess
-  location /srv/www/domain.com/htdocs/vqmod/ {
-    location ~ \.(xml|cache) {
-      deny all;
-    }
   }
   
   # Make sure these get through
