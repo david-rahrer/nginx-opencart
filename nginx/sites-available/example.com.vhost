@@ -52,17 +52,9 @@ server {
   access_log /var/log/nginx/domain.com.access.log;
   error_log /var/log/nginx/domain.com.error.log;
 
-  # Add trailing slash to */admin requests.
-  rewrite /admin$ $scheme://$host$uri/ permanent;
-  
   # Add trailing slash to */vqmod/install requests.
   rewrite /vqmod/install$ $scheme://$host$uri/ permanent;
 
-  # Run index.php on /admin calls
-  location /admin/ {
-    index index.php;
-  }
-  
   # Run index.php on /vqmod/install calls
   location /vqmod/install/ {
     index index.php;
@@ -80,7 +72,7 @@ server {
 
   location / {
     # This try_files directive is used to enable SEO-friendly URLs for OpenCart
-    try_files $uri @opencart;
+    try_files $uri $uri/ @opencart;
   }
 
   location @opencart {
