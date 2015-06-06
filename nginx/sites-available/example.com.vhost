@@ -94,13 +94,6 @@ server {
     deny all;
   }
 
-  # Option to create password protected directory
-  # http://www.howtoforge.com/basic-http-authentication-with-nginx
-  # location /admin {
-  #   auth_basic "Administrator Login";
-  #   auth_basic_user_file /var/www/domain.com/admin/.htpasswd;
-  # }
-
   # Do not log access to the favicon, to keep the logs cleaner
   location = /favicon.ico {
     log_not_found off;
