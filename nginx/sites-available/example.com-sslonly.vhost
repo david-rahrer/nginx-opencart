@@ -17,9 +17,12 @@ server {
 }
 
 server {
-  listen 80; # listen for ipv4; this line is default and implied
-  listen 443 ssl;
+  listen 443 ssl spdy;
   server_name domain.com;
+  
+  # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
+  ssl_certificate /srv/www/domain.com/ssl/domain.com.crt;
+  ssl_certificate_key /srv/www/domnain.com/ssl/domain.com.key;
 
   # Allow multiple connections to use the same key data
   ssl_session_timeout 5m;
