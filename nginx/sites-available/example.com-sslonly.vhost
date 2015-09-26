@@ -1,8 +1,19 @@
 # Move the www people to no-www
 server {
   listen 80;
+  server_name www.domain.com domain.com;
+  return 301 https://domain.com$request_uri;
+}
+
+server {
+  listen 443 ssl;
   server_name www.domain.com;
-  return 301 $scheme://domain.com$request_uri;
+  
+  # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
+  ssl_certificate /srv/www/domain.com/ssl/domain.com.crt;
+  ssl_certificate_key /srv/www/domnain.com/ssl/domain.com.key;
+  
+  return 301 https://domain.com$request_uri;
 }
 
 server {
@@ -10,10 +21,6 @@ server {
   listen 443 ssl;
   server_name domain.com;
 
-  # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
-  ssl_certificate /srv/www/domain.com/ssl/domain.com.crt;
-  ssl_certificate_key /srv/www/domnain.com/ssl/domain.com.key;
-  
   # Allow multiple connections to use the same key data
   ssl_session_timeout 5m;
   ssl_session_cache shared:SSL:50m;
@@ -63,7 +70,7 @@ server {
   }
   
   # Nginx configuration of vqmod htaccess
-  location /srv/www/domain.com/htdocs/vqmod/ {
+  location /srv/www/oc-demo.tk/htdocs/vqmod/ {
     location ~ \.(xml|cache) {
       deny all;
     }
