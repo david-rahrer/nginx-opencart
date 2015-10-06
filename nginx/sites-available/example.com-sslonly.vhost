@@ -28,25 +28,8 @@ server {
   ssl_session_timeout 5m;
   ssl_session_cache shared:SSL:50m;
   
-  # Diffie-Hellman parameter for DHE ciphersuites, recommended 2048 bits
-  ssl_dhparam /etc/ssl/certs/dhparam.pem;
-
-  # Intermediate configuration. tweak to your needs
-  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
-  include snippets/ssl_ciphers_intermediate.conf;
-  ssl_prefer_server_ciphers on;
-
-  # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
-  #add_header Strict-Transport-Security max-age=15768000;
-
-  # OCSP Stapling - fetch OCSP records from URL in ssl_certificate and cache them
-  ssl_stapling on;
-  ssl_stapling_verify on;
-
   # Verify chain of trust of OCSP response using Root CA and Intermediate certs
   ssl_trusted_certificate /srv/www/domain.com/ssl/unified-ssl.crt;
-  resolver 8.8.8.8 8.8.4.4;
-  resolver_timeout 10s;
   
   root /srv/www/domain.com/htdocs;
   index index.php index.html index.htm;
