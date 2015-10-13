@@ -11,7 +11,7 @@ server {
   
   # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
   ssl_certificate /srv/www/domain.com/ssl/domain.com.crt;
-  ssl_certificate_key /srv/www/domnain.com/ssl/domain.com.key;
+  ssl_certificate_key /srv/www/domain.com/ssl/domain.com.key;
   
   return 301 https://domain.com$request_uri;
 }
@@ -22,7 +22,7 @@ server {
   
   # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
   ssl_certificate /srv/www/domain.com/ssl/domain.com.crt;
-  ssl_certificate_key /srv/www/domnain.com/ssl/domain.com.key;
+  ssl_certificate_key /srv/www/domain.com/ssl/domain.com.key;
 
   # Allow multiple connections to use the same key data
   ssl_session_timeout 5m;
