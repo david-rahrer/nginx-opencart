@@ -55,7 +55,7 @@ server {
   }
   
   # Nginx configuration of vqmod htaccess
-  location /srv/www/oc-demo.tk/htdocs/vqmod/ {
+  location /srv/www/domain.com/htdocs/vqmod/ {
     location ~ \.(xml|cache) {
       deny all;
     }
