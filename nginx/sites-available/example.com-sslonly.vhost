@@ -27,10 +27,6 @@ server {
   ssl_certificate /srv/www/domain.com/ssl/domain.com.crt;
   ssl_certificate_key /srv/www/domain.com/ssl/domain.com.key;
 
-  # Allow multiple connections to use the same key data
-  ssl_session_timeout 5m;
-  ssl_session_cache shared:SSL:50m;
-  
   # Verify chain of trust of OCSP response using Root CA and Intermediate certs
   ssl_trusted_certificate /srv/www/domain.com/ssl/unified-ssl.crt;
   
