@@ -167,8 +167,7 @@ server {
 
     fastcgi_pass unix:/var/run/domain.com.sock;
     fastcgi_index index.php;
-    # Uncomment if site is HTTPS
-    #fastcgi_param HTTPS on;
+    fastcgi_param HTTPS on;
     include fastcgi.conf;
   }
 
