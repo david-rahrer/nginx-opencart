@@ -1,16 +1,16 @@
 # Move the www people to no-www
 server {
   listen 80;
-  #listen [::]:80; #enable for IPv6 support
+  listen [::]:80; #enable for IPv6 support
   server_name www.domain.com;
   return 301 $scheme://domain.com$request_uri;
 }
 
 server {
   listen 80;
-  #listen [::]:80; #enable for IPv6 support
+  listen [::]:80;
   listen 443 ssl;
-  #listen [::]:443 ssl; #enable for IPv6 support
+  listen [::]:443 ssl;
   server_name domain.com;
 
   # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
