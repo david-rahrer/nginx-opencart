@@ -1,0 +1,188 @@
+# Move the www people to no-www
+server {
+  listen 80;
+  listen [::]:80; #enable for IPv6 support
+  server_name www.domain.com;
+  return 301 $scheme://domain.com$request_uri;
+}
+
+server {
+  listen 80;
+  listen [::]:80;
+  listen 443 ssl;
+  listen [::]:443 ssl;
+  server_name domain.com;
+
+  # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
+  ssl_certificate /etc/letsencrypt/live/domain.com/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/domain.com/privkey.pem;
+  
+  # Verify chain of trust of OCSP response using Root CA and Intermediate certs
+  ssl_trusted_certificate /etc/letsencrypt/live/domain.com/fullchain.pem;
+  
+  root /srv/www/domain.com/htdocs;
+  index index.php index.html index.htm;
+  charset UTF-8;
+  autoindex off;
+
+  # Show "Not Found" 404 errors in place of "Forbidden" 403 errors, because
+  # forbidden errors allow attackers potential insight into your server's
+  # layout and contents
+  error_page 403 =404;
+
+  # It's always good to set logs, note however you cannot turn off the error log
+  # Setting error_log off; will simply create a file called 'off'
+  access_log /var/log/nginx/domain.com.access.log;
+  error_log /var/log/nginx/domain.com.error.log;
+
+  # Vqmod settings
+  # Add trailing slash to */vqmod/install requests.
+  rewrite /vqmod/install$ $scheme://$host$uri/ permanent;
+  
+  # Run index.php on /vqmod/install calls
+  location /vqmod/install/ {
+    index index.php;
+  }
+  
+  # Nginx configuration of vqmod htaccess
+  location /srv/www/domain.com/htdocs/vqmod/ {
+    location ~ \.(xml|cache) {
+      deny all;
+    }
+  }
+  # End Vqmod settings
+  
+  # SEO URL Settings
+  # Nginx configuration of OC htaccess
+  location = /sitemap.xml {
+    rewrite ^(.*)$ /index.php?route=feed/google_sitemap break; 
+  } 
+
+  location = /googlebase.xml {
+    rewrite ^(.*)$ /index.php?route=feed/google_base break; 
+  } 
+
+  location / {
+    # This try_files directive is used to enable SEO-friendly URLs for OpenCart
+    try_files $uri $uri/ @opencart;
+  }
+
+  location @opencart {
+    rewrite ^/(.+)$ /index.php?_route_=$1 last;
+  }
+  # End SEO settings
+
+  # Make sure files with the following extensions do not get loaded by nginx because nginx would display the source code, and these files can contain PASSWORDS!
+  location ~* \.(engine|inc|info|ini|install|log|make|module|profile|test|po|sh|.*sql|theme|tpl(\.php)?|xtmpl)$|^(\..*|Entries.*|Repository|Root|Tag|Template)$|\.php_ {
+    deny all;
+  }
+
+  # Do not log access to the favicon, to keep the logs cleaner
+  location = /favicon.ico {
+    log_not_found off;
+    access_log off;
+  }
+
+  location = /apple-touch-icon.png {
+    log_not_found off;
+    access_log off;
+  }
+
+  location = /apple-touch-icon-precomposed.png {
+    log_not_found off;
+    access_log off;
+  }
+
+  # This block will catch static file requests, such as images, css, js
+  # The ?: prefix is a 'non-capturing' mark, meaning we do not require
+  # the pattern to be captured into $1 which should help improve performance
+  location ~* \.(?:3gp|gif|jpg|jpe?g|png|ico|wmv|avi|asf|asx|mpg|mpeg|mp4|pls|mp3|mid|wav|swf|flv|txt|js|css|exe|zip|tar|rar|gz|tgz|bz2|uha|7z|doc|docx|xls|xlsx|pdf|iso|woff|woff2|eot|otf|ttf)$ {
+    # Some basic cache-control for static files to be sent to the browser
+    expires max;
+    add_header Pragma public;
+    add_header Cache-Control "public, must-revalidate, proxy-revalidate";
+  }
+
+  # Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).
+  # Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
+  location ~ /\. {
+    access_log off;
+    log_not_found off;
+    deny all;
+  }
+
+  location ~ ~$ {
+    access_log off;
+    log_not_found off;
+    deny all;
+  }
+
+  # Deny access to any files with a .php extension in these directories
+  # Works in sub-directory installs and also in multisite network
+  # Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
+  location ~* /(?:cache|logs|image|download)/.*\.php$ {
+    deny all;
+  }
+  
+  # Make sure these get through
+  location = /robots.txt {
+    allow all;
+    log_not_found off;
+    access_log off;
+  }
+  
+  # Fix for Firefox issue with cross site font icons
+  location ~* \.(eot|otf|ttf|woff)$ {
+    add_header Access-Control-Allow-Origin *;
+  }
+
+  # redirect server error pages to the static page /50x.html
+  error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+    root /usr/share/nginx/www;
+  }
+
+  # Pass all .php files onto a php-fpm/php-fcgi server.
+  location ~ [^/]\.php(/|$) {
+    # Regex to split $uri to $fastcgi_script_name and $fastcgi_path
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+    # Check that the PHP script exists before passing it
+    try_files $fastcgi_script_name =404;
+
+    # Bypass the fact that try_files resets $fastcgi_path_info
+    # see: http://trac.nginx.org/nginx/ticket/321
+    set $path_info $fastcgi_path_info;
+    fastcgi_param PATH_INFO $path_info;
+
+    fastcgi_pass unix:/var/run/domain.com.sock;
+    fastcgi_index index.php;
+    # Uncomment if site is HTTPS
+    #fastcgi_param HTTPS on;
+    include fastcgi.conf;
+  }
+
+  # Use this block if PHPMyAdmin is enabled for domain.com
+  location /phpmyadmin {
+    root /usr/share/;
+    index index.php index.html index.htm;
+
+    location ~ ^/phpmyadmin/(.+\.php)$ {
+      try_files $uri =404;
+      root /usr/share/;
+      fastcgi_pass unix:/var/run/domain.com.sock;
+      fastcgi_index index.php;
+      include fastcgi.conf;
+    }
+
+    location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
+      root /usr/share/;
+    }
+  }
+
+  location /phpMyAdmin {
+    rewrite ^/* /phpmyadmin last;
+  }
+  # End PHPMyAdmin block
+
+} # End of server block.
