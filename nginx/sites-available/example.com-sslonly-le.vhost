@@ -12,8 +12,8 @@ server {
   server_name www.domain.com;
   
   # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
-  ssl_certificate /etc/letsencrypt/live/domain.com/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/domain.com/privkey.pem;
+  ssl_certificate /etc/ssl/domain.com/domain.com.crt;
+  ssl_certificate_key /etc/ssl/domain.com/domain.com.key;
   
   return 301 https://domain.com$request_uri;
 }
@@ -24,11 +24,11 @@ server {
   server_name domain.com;
   
   # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
-  ssl_certificate /etc/letsencrypt/live/domain.com/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/domain.com/privkey.pem;
+  ssl_certificate /etc/ssl/domain.com/domain.com.crt;
+  ssl_certificate_key /etc/ssl/domain.com/domain.com.key;
 
   # Verify chain of trust of OCSP response using Root CA and Intermediate certs
-  ssl_trusted_certificate /etc/letsencrypt/live/domain.com/fullchain.pem;
+  ssl_trusted_certificate /etc/ssl/domain.com/domain.com.pem;
   
   root /srv/www/domain.com/htdocs;
   index index.php index.html index.htm;
