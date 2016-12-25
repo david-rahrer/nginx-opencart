@@ -88,7 +88,20 @@ server {
   }
 
   # Do not log access to the favicon, to keep the logs cleaner
-  location ~ ^/(favicon.ico|apple-touch-icon.png|apple-touch-icon-precomposed.png)/ {
+  location = /favicon.ico {
+    log_not_found off;
+    access_log off;
+  }
+
+  location = /apple-touch-icon.png {
+    log_not_found off;
+    access_log off;
+  }
+
+  location = /apple-touch-icon-precomposed.png {
+    log_not_found off;
+    access_log off;
+  }
 
   # This block will catch static file requests, such as images, css, js
   # The ?: prefix is a 'non-capturing' mark, meaning we do not require
