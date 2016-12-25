@@ -45,11 +45,6 @@ server {
   access_log /var/log/nginx/domain.com.access.log;
   error_log /var/log/nginx/domain.com.error.log;
   
-  # allow Let's Encrypt client authentication - letsencrypt.org
-  location ~ /.well-known {
-    allow all;
-  }
-
   # Vqmod settings
   # Add trailing slash to */vqmod/install requests.
   rewrite /vqmod/install$ $scheme://$host$uri/ permanent;
