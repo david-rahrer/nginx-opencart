@@ -163,27 +163,7 @@ server {
     include fastcgi.conf;
   }
 
-  # Use this block if PHPMyAdmin is enabled for domain.com
-  location /phpmyadmin {
-    root /usr/share/;
-    index index.php index.html index.htm;
-
-    location ~ ^/phpmyadmin/(.+\.php)$ {
-      try_files $uri =404;
-      root /usr/share/;
-      fastcgi_pass unix:/var/run/domain.com.sock;
-      fastcgi_index index.php;
-      include fastcgi.conf;
-    }
-
-    location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
-      root /usr/share/;
-    }
-  }
-
-  location /phpMyAdmin {
-    rewrite ^/* /phpmyadmin last;
-  }
-  # End PHPMyAdmin block
+  # Adds virtual link to Adminer (replacement for PHPMyAdmin)
+  include snippets/adminer.conf;
 
 } # End of server block.
