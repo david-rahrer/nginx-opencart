@@ -1,24 +1,34 @@
 # Move the www people to no-www
 server {
   listen 80;
-  listen [::]:80; #enable for IPv6 support
-  server_name www.domain.com;
-  return 301 $scheme://domain.com$request_uri;
+  listen [::]:80;
+  server_name www.domain.com domain.com;
+  return 301 https://domain.com$request_uri;
 }
 
 server {
-  listen 80;
-  listen [::]:80;
   listen 443 ssl;
   listen [::]:443 ssl;
-  server_name domain.com;
-
-  # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
-  ssl_certificate /srv/www/domain.com/ssl/domain.com.crt;
-  ssl_certificate_key /srv/www/domnain.com/ssl/domain.com.key;
+  server_name www.domain.com;
   
+  # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
+  ssl_certificate /etc/ssl/domain.com/domain.com.crt;
+  ssl_certificate_key /etc/ssl/domain.com/domain.com.key;
+  
+  return 301 https://domain.com$request_uri;
+}
+
+server {
+  listen 443 ssl spdy;
+  listen [::]:443 ssl spdy;
+  server_name domain.com;
+  
+  # Certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
+  ssl_certificate /etc/ssl/domain.com/domain.com.crt;
+  ssl_certificate_key /etc/ssl/domain.com/domain.com.key;
+
   # Verify chain of trust of OCSP response using Root CA and Intermediate certs
-  ssl_trusted_certificate /srv/www/domain.com/ssl/unified-ssl.crt;
+  ssl_trusted_certificate /etc/ssl/domain.com/domain.com.pem;
   
   root /srv/www/domain.com/htdocs;
   index index.php index.html index.htm;
@@ -34,7 +44,7 @@ server {
   # Setting error_log off; will simply create a file called 'off'
   access_log /var/log/nginx/domain.com.access.log;
   error_log /var/log/nginx/domain.com.error.log;
-
+  
   # Vqmod settings
   # Add trailing slash to */vqmod/install requests.
   rewrite /vqmod/install$ $scheme://$host$uri/ permanent;
@@ -78,20 +88,7 @@ server {
   }
 
   # Do not log access to the favicon, to keep the logs cleaner
-  location = /favicon.ico {
-    log_not_found off;
-    access_log off;
-  }
-
-  location = /apple-touch-icon.png {
-    log_not_found off;
-    access_log off;
-  }
-
-  location = /apple-touch-icon-precomposed.png {
-    log_not_found off;
-    access_log off;
-  }
+  location ~ ^/(favicon.ico|apple-touch-icon.png|apple-touch-icon-precomposed.png)/ {
 
   # This block will catch static file requests, such as images, css, js
   # The ?: prefix is a 'non-capturing' mark, meaning we do not require
@@ -157,32 +154,11 @@ server {
 
     fastcgi_pass unix:/var/run/domain.com.sock;
     fastcgi_index index.php;
-    # Uncomment if site is HTTPS
-    #fastcgi_param HTTPS on;
+    fastcgi_param HTTPS on;
     include fastcgi.conf;
   }
 
-  # Use this block if PHPMyAdmin is enabled for domain.com
-  location /phpmyadmin {
-    root /usr/share/;
-    index index.php index.html index.htm;
-
-    location ~ ^/phpmyadmin/(.+\.php)$ {
-      try_files $uri =404;
-      root /usr/share/;
-      fastcgi_pass unix:/var/run/domain.com.sock;
-      fastcgi_index index.php;
-      include fastcgi.conf;
-    }
-
-    location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
-      root /usr/share/;
-    }
-  }
-
-  location /phpMyAdmin {
-    rewrite ^/* /phpmyadmin last;
-  }
-  # End PHPMyAdmin block
+  # Adds virtual link to Adminer (replacement for PHPMyAdmin)
+  include snippets/adminer.conf;
 
 } # End of server block.
